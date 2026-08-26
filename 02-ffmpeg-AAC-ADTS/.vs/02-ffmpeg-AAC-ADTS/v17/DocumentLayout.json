@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\02-ffmpeg-AAC-ADTS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}|02-ffmpeg-AAC-ADTS.vcxproj|C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\02-ffmpeg-AAC-ADTS\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}|02-ffmpeg-AAC-ADTS.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\02-ffmpeg-AAC-ADTS\\main.cpp",
+              "RelativeDocumentMoniker": "main.cpp",
+              "ToolTip": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\02-ffmpeg-AAC-ADTS\\main.cpp",
+              "RelativeToolTip": "main.cpp",
+              "ViewState": "AgIAALMAAAAAAAAAAAAgwMMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-08-26T07:25:47.653Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

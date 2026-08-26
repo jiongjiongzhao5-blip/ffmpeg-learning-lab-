@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37516.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02-ffmpeg-AAC-ADTS", "02-ffmpeg-AAC-ADTS.vcxproj", "{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Debug|x64.ActiveCfg = Debug|x64
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Debug|x64.Build.0 = Debug|x64
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Debug|x86.ActiveCfg = Debug|Win32
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Debug|x86.Build.0 = Debug|Win32
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Release|x64.ActiveCfg = Release|x64
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Release|x64.Build.0 = Release|x64
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Release|x86.ActiveCfg = Release|Win32
+		{AD5F6D09-8C43-4C3E-8F21-9AF833572C89}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5169F8A8-6BBD-4E84-8E99-6FFB05EC60AF}
+	EndGlobalSection
+EndGlobal
