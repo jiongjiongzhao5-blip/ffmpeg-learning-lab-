@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libavcodec\ac3_parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\adts_parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\avcodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\avdct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\bsf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\codec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\codec_desc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\codec_id.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\codec_par.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\d3d11va.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\defs.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\dirac.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\dv_profile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\dxva2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\exif.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\jni.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\mediacodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\packet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\qsv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\smpte_436m.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\vdpau.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\version_major.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\videotoolbox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavcodec\vorbis_parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavdevice\avdevice.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavdevice\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavdevice\version_major.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavfilter\avfilter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavfilter\buffersink.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavfilter\buffersrc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavfilter\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavfilter\version_major.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavformat\avformat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavformat\avio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavformat\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavformat\version_major.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\adler32.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\aes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\aes_ctr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\ambient_viewing_environment.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\attributes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\audio_fifo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\avassert.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\avconfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\avstring.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\avutil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\base64.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\blowfish.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\bprint.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\bswap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\buffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\camellia.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\cast5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\channel_layout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\container_fifo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\cpu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\crc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\csp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\des.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\detection_bbox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\dict.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\display.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\dovi_meta.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\downmix_info.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\encryption_info.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\error.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\eval.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\executor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\ffversion.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\fifo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\file.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\film_grain_params.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\frame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hash.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hdr_dynamic_metadata.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hdr_dynamic_vivid_metadata.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hmac.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_amf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_cuda.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_d3d11va.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_d3d12va.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_drm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_dxva2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_mediacodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_oh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_opencl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_qsv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_vaapi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_vdpau.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_videotoolbox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\hwcontext_vulkan.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\iamf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\imgutils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\intfloat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\intreadwrite.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\lfg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\lzo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\macros.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\mastering_display_metadata.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\mathematics.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\mem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\motion_vector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\murmur3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\opt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\parseutils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\pixdesc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\pixelutils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\pixfmt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\random_seed.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\rational.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\raw_color_params.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\rc4.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\refstruct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\replaygain.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\ripemd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\samplefmt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\sha.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\sha512.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\spherical.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\stereo3d.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\tdrdi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\tea.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\threadmessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\time.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\timecode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\timestamp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\twofish.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\tx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\uuid.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\video_enc_params.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\video_hint.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libavutil\xtea.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libswresample\swresample.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libswresample\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libswresample\version_major.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libswscale\swscale.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libswscale\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libswscale\version_major.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lib\avcodec-63.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="lib\avdevice-63.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="lib\avfilter-12.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="lib\avformat-63.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="lib\avutil-61.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="lib\swresample-7.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="lib\swscale-10.def">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
+</Project>
