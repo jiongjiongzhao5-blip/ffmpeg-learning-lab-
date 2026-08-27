@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37516.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06-ffmpeg-MP4封装格式剖析-MP4解封装", "06-ffmpeg-MP4封装格式剖析-MP4解封装.vcxproj", "{15924FF2-503A-4B6B-A192-D1E23E5C800E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Debug|x64.ActiveCfg = Debug|x64
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Debug|x64.Build.0 = Debug|x64
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Debug|x86.ActiveCfg = Debug|Win32
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Debug|x86.Build.0 = Debug|Win32
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Release|x64.ActiveCfg = Release|x64
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Release|x64.Build.0 = Release|x64
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Release|x86.ActiveCfg = Release|Win32
+		{15924FF2-503A-4B6B-A192-D1E23E5C800E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6809A3DD-EA87-489A-83C2-9287632C265E}
+	EndGlobalSection
+EndGlobal
