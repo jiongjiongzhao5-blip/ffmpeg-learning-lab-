@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\12-ffmpeg-\u8FC7\u6EE4\u5668\\ffmpeg-\u8FC7\u6EE4\u5668\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{99705F52-32A4-4640-8384-B850858D2FE8}|ffmpeg-\u8FC7\u6EE4\u5668.vcxproj|C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\12-ffmpeg-\u8FC7\u6EE4\u5668\\ffmpeg-\u8FC7\u6EE4\u5668\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{99705F52-32A4-4640-8384-B850858D2FE8}|ffmpeg-\u8FC7\u6EE4\u5668.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\12-ffmpeg-\u8FC7\u6EE4\u5668\\ffmpeg-\u8FC7\u6EE4\u5668\\main.cpp",
+              "RelativeDocumentMoniker": "main.cpp",
+              "ToolTip": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\12-ffmpeg-\u8FC7\u6EE4\u5668\\ffmpeg-\u8FC7\u6EE4\u5668\\main.cpp",
+              "RelativeToolTip": "main.cpp",
+              "ViewState": "AgIAACsAAAAAAAAAAAAAADoAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-08-28T08:26:51.521Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
