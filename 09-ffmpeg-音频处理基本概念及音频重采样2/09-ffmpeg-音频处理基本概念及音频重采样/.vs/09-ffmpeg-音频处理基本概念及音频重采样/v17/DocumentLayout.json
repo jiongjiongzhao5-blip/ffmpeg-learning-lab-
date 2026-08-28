@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\",
+  "WorkspaceRootPath": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u68372\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D003ED63-D5CE-49A6-A927-1F2EC5066655}|09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837.vcxproj|C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{D003ED63-D5CE-49A6-A927-1F2EC5066655}|09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837.vcxproj|C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u68372\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{D003ED63-D5CE-49A6-A927-1F2EC5066655}|09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -20,11 +20,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\main.cpp",
+              "DocumentMoniker": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u68372\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
-              "ToolTip": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\main.cpp",
+              "ToolTip": "C:\\Workspace\\Documents\\\u5F00\u53D1\\ffmpeg-learning-lab-\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u68372\\09-ffmpeg-\u97F3\u9891\u5904\u7406\u57FA\u672C\u6982\u5FF5\u53CA\u97F3\u9891\u91CD\u91C7\u6837\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-08-27T15:02:29.926Z",
               "EditorCaption": ""

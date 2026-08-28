@@ -70,19 +70,35 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ReferencePath>
+    </ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ReferencePath>
+    </ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ReferencePath>
+    </ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ReferencePath>
+    </ReferencePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avutil.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avfilter.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,13 +109,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avutil.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avfilter.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -108,13 +124,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avutil.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avfilter.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,13 +141,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avutil.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Workspace\Documents\开发\ffmpeg-learning-lab-\09-ffmpeg-音频处理基本概念及音频重采样2\09-ffmpeg-音频处理基本概念及音频重采样\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;avfilter.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
