@@ -2,5 +2,5 @@
 C:\Workspace\Documents\开发\ffmpeg-learning-lab-\13-ffplay-播放器\ffplay播放器\3d\ffmpeg\include\libavutil\rational.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
   (编译源文件“main.cpp”)
   
-C:\Workspace\Documents\开发\ffmpeg-learning-lab-\13-ffplay-播放器\ffplay播放器\main.cpp(772,25): warning C4244: “初始化”: 从“int64_t”转换到“int”，可能丢失数据
+C:\Workspace\Documents\开发\ffmpeg-learning-lab-\13-ffplay-播放器\ffplay播放器\main.cpp(923,25): warning C4244: “初始化”: 从“int64_t”转换到“int”，可能丢失数据
   ffplay播放器.vcxproj -> C:\Workspace\Documents\开发\ffmpeg-learning-lab-\13-ffplay-播放器\ffplay播放器\x64\Debug\ffplay播放器.exe
