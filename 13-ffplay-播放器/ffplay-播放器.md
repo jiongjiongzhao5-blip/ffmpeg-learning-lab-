@@ -254,6 +254,7 @@ if (d->queue->serial == d->pkt_serial) {   // 序列连续才取
 - 遇到 `AVERROR_EOF`（读到空包冲完了）返回 0，同时 `avcodec_flush_buffers` 清缓存，**这样循环播放还能再解**。
 
 **第二步：取包，过滤"过时"的包。**
+
 ```c
 do {
     if (队列空) SDL_CondSignal(empty_queue_cond);   // 唤醒读线程
@@ -602,78 +603,3 @@ diff >= sync_threshold（视频快了）：
 5. **教程一处代码 bug**：`packet_queue_put_private` 里的 `printf("q->serial = %d\n", q->serial++);` 是讲师调试语句且**写错（serial 自增两次）**，学习时忽略。
 6. **SDL**：这套课用 SDL2（不是上古 SDL1），没问题；SDL3 已发布，新项目可考虑。
 7. **风格建议**：ffplay 是纯 C + 全局变量 + 手写队列。**你用 Qt6 + C++17 不必照搬**——更现代的做法是用标准库 `std::queue`/`std::mutex`/`std::condition_variable`、RAII 管理资源、用 QMediaPlayer 或封装类。**但"读线程→包队列→解码线程→帧队列→渲染"的架构，以及 serial、flush_pkt、二级缓冲、主从时钟同步这些设计，到今天依然正确，值得照抄**——学的是道理，不是代码。
-
----
-
-## 十二、遗漏检查清单（对照全部 9 份 PDF + 上一轮审阅逐条核对）
-
-**结构体（PDF 1-3）**：
-- [x] ffplay 意义、ijkplayer 背景
-- [x] 框架、线程划分（读/音/视/字解码/主线程）
-- [x] VideoState 全部字段（含时钟、三队列、三解码器、音频缓冲组、同步参数、滤镜、窗口、退出等）
-- [x] Clock 全部字段 + pts_drift 对时原理
-- [x] MyAVPacketList / PacketQueue 及 init/destroy/start/abort/put/put_private/get/put_nullpacket/flush
-- [x] flush_pkt 作用、serial 变化过程、PacketQueue 内存管理总结
-- [x] Frame / FrameQueue 及 init/destroy/peek_writable/push/peek_readable/peek/peek_next/peek_last/next/nb_remaining
-- [x] keep_last + rindex_shown 保留最后一帧机制
-- [x] AudioParams 五个字段 + 计算
-- [x] Decoder 封装（pkt_serial/finished/packet_pending/empty_queue_cond/start_pts/next_pts）
-
-**读线程（PDF 4）**：
-- [x] 准备 8 步（alloc_context / interrupt_callback / open_input / find_stream_info / -ss 起始 / 选流 / 窗口尺寸 / stream_component_open）
-- [x] For 循环 10 步（退出 / 暂停(网络流) / seek / attached_pic / 背压 / 播放结束 loop与autoexit / av_read_frame / EOF 空包 / 播放范围 / 入队）
-- [x] **stream_has_enough_packets 完整 4 类边界（含 !duration 兜底）** ← 审阅第 3 条已补
-- [x] 退出线程处理
-
-**解码线程（PDF 5-6）**：
-- [x] video_thread 全流程
-- [x] **get_video_frame Early Drop 完整五要素（含序列一致、队列有余粮）** ← 审阅第 2 条已补
-- [x] decoder_decode_frame 三步（先取帧 / 取包过滤 / 送包）+ flush_pkt + packet_pending + serial 过滤
-- [x] queue_picture
-- [x] audio_thread + 音频 pts 三次换算差异（{1, sample_rate}）
-
-**音频输出/重采样（PDF 7-8）**：
-- [x] 二级缓冲模型
-- [x] audio_open（降级尝试、S16SYS、**samples 必须 2 的幂** ← 自补细节）
-- [x] sdl_audio_callback（音量/静音、audclk 更新公式）
-- [x] audio_decode_frame（取帧、serial 丢帧、重采样判断、audio_clock 更新）
-- [x] 重采样逻辑 + swr_set_compensation 软补偿
-
-**视频输出/尺寸（PDF 9-10）**：
-- [x] 输出初始化（SDL_Init / 窗口 / renderer）
-- [x] **calculate_display_rect + `& ~1` 偶数对齐（含原因修正为色度下采样）** ← 审阅第 1 条已补
-- [x] video_refresh 全流程（帧时长 / 重复 / 丢帧）
-- [x] **flip_v = linesize[0] < 0 触发** ← 审阅第 4 条已补
-- [x] **负 linesize 指针偏移（末行首地址 + 步长取反；UNKNOWN 分支无需处理的原因）** ← 审阅第 5 条已补
-- [x] upload_texture 三种情况 + 像素映射表 + realloc_texture
-- [x] sws_getContext / getCachedContext / scale / freeContext + 性能测试结论
-
-**同步基础（PDF 11）**：
-- [x] 三种同步策略
-- [x] PTS/DTS/time_base 概念、AV_TIME_BASE 换算
-- [x] 各结构体 time_base/duration 对比（TS/FLV/MP4）
-- [x] 视频/音频 PTS 的三次转换流程
-
-**同步实现（PDF 12-14）**：
-- [x] audio master（音频主流程 / 视频主流程 / compute_target_delay + sync_threshold）
-- [x] video master（synchronize_audio 指数加权 / 样本调整 / ±10% 限幅 / audio_diff_threshold）
-- [x] swr_set_compensation 参数含义
-- [x] ext master（**sync_clock_to_slave 的 NaN 或 >10s 阈值判定** ← 审阅第 6 条已补；先有鸡还是先有蛋的解法）
-
-**暂停/逐帧/音量（PDF 15-16）**：
-- [x] toggle_pause → stream_toggle_pause（frame_timer 补时间、四时钟翻转）
-- [x] 暂停时视频/音频行为
-- [x] 逐帧 step_to_next_frame
-- [x] 音量/静音（SDL_MixAudioFormat）
-
-**seek（PDF 17）**：
-- [x] seek 四步（解复用 seek / 清 packet + flush_pkt / 清 frame 靠 serial / 重置时钟）
-- [x] seek_req/flags/pos/rel、avformat_seek_file 参数与 [min,max]
-- [x] avformat_seek_file → av_seek_frame → seek_frame_internal
-- [x] seek_frame_byte（TS）/ mov_read_seek（MP4）对比 + CBR/VBR
-- [x] 退出播放（线程退出机制）
-
-**现代迁移（自补 + 审阅第 7 条）**：
-- [x] av_init_packet 移除、av_packet_alloc 替代
-- [x] **AVChannelLayout 迁移 + swr_alloc_set_opts → swr_alloc_set_opts2（官方 APIchanges 证据）**
-- [x] ffplay.c 移到 fftools、SDL3、Qt6+C++17 架构建议
