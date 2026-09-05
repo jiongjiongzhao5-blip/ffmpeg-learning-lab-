@@ -1,16 +1,16 @@
 /**
  * ============================================================================
- * ¹¤Òµ¼¶ÏÖ´ú»¯ÒôÊÓÆµ²¥·ÅÆ÷ÒıÇæ (Modern C++17 + FFmpeg 8.x/9.x + SDL3)
+ * å·¥ä¸šçº§ç°ä»£åŒ–éŸ³è§†é¢‘æ’­æ”¾å™¨å¼•æ“ (Modern C++17 + FFmpeg 8.x/9.x + SDL3)
  * ============================================================================
  *
- * [11-01] ¼Ü¹¹Éè¼ÆÒâÒåÓë±³¾°£º
- * - ffplay.c ÊÇÏÖ´úÖÚ¶à¹¤Òµ¼¶/¿ªÔ´²¥·ÅÆ÷£¨Èç Bilibili ijkplayer£©µÄºËĞÄÔ­ĞÍ¡£
- * - ºËĞÄ¹Ç¼Ü£º½â¸´ÓÃ¶ÁÏß³Ì -> Ïß³Ì°²È«¶ÓÁĞ -> ÒôÊÓÆµ½âÂëÏß³Ì -> »·ĞÎÖ¡¶ÓÁĞ -> äÖÈ¾/»Øµ÷Êä³ö¡£
- * - ±¾¹¤³Ì²ÉÓÃ C++17¡¢ÏÖ´úÏß³ÌÍ¬²½Ä£ĞÍ¡¢RAII¡¢Ô­×Ó±äÁ¿¡¢FFmpeg 8.x Óë SDL3 ¹æ·¶£¬
- *   ³¹µ×ÌÔÌ­·ÏÆú API£¬ÊµÏÖÍêÕûµÄ¹¤Òµ¼¶²¥·ÅÆ÷¡£
+ * [11-01] æ¶æ„è®¾è®¡æ„ä¹‰ä¸èƒŒæ™¯ï¼š
+ * - ffplay.c æ˜¯ç°ä»£ä¼—å¤šå·¥ä¸šçº§/å¼€æºæ’­æ”¾å™¨ï¼ˆå¦‚ Bilibili ijkplayerï¼‰çš„æ ¸å¿ƒåŸå‹ã€‚
+ * - æ ¸å¿ƒéª¨æ¶ï¼šè§£å¤ç”¨è¯»çº¿ç¨‹ -> çº¿ç¨‹å®‰å…¨é˜Ÿåˆ— -> éŸ³è§†é¢‘è§£ç çº¿ç¨‹ -> ç¯å½¢å¸§é˜Ÿåˆ— -> æ¸²æŸ“/å›è°ƒè¾“å‡ºã€‚
+ * - æœ¬å·¥ç¨‹é‡‡ç”¨ C++17ã€ç°ä»£çº¿ç¨‹åŒæ­¥æ¨¡å‹ã€RAIIã€åŸå­å˜é‡ã€FFmpeg 8.x ä¸ SDL3 è§„èŒƒï¼Œ
+ *   å½»åº•æ·˜æ±°åºŸå¼ƒ APIï¼Œå®ç°å®Œæ•´çš„å·¥ä¸šçº§æ’­æ”¾å™¨ã€‚
  */
 
- /* ==================== ±ê×¼¿âÓëÍâ²¿¿âÍ·ÎÄ¼ş ==================== */
+ /* ==================== æ ‡å‡†åº“ä¸å¤–éƒ¨åº“å¤´æ–‡ä»¶ ==================== */
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -23,7 +23,7 @@
 #include <cstring>
 #include <algorithm>
 
-/* FFmpeg Óë SDL3 µÄ C ½Ó¿Ú£¨extern "C" È·±£ C++ ÕıÈ·Á´½Ó£© */
+/* FFmpeg ä¸ SDL3 çš„ C æ¥å£ï¼ˆextern "C" ç¡®ä¿ C++ æ­£ç¡®é“¾æ¥ï¼‰ */
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -36,26 +36,26 @@ extern "C" {
 #include <SDL3/SDL.h>
 }
 
-/* ==================== È«¾Ö³£Á¿¶¨Òå ==================== */
-// °ü¶ÓÁĞ×î´ó×Ö½ÚÊı£¨±ÜÃâÄÚ´æ±¬Õ¨£©
+/* ==================== å…¨å±€å¸¸é‡å®šä¹‰ ==================== */
+// åŒ…é˜Ÿåˆ—æœ€å¤§å­—èŠ‚æ•°ï¼ˆé¿å…å†…å­˜çˆ†ç‚¸ï¼‰
 constexpr int MAX_QUEUE_SIZE = 15 * 1024 * 1024;
-// ÒôÊÓÆµÍ¬²½ãĞÖµ£º×îĞ¡/×î´óÆ«²î£¨Ãë£©
+// éŸ³è§†é¢‘åŒæ­¥é˜ˆå€¼ï¼šæœ€å°/æœ€å¤§åå·®ï¼ˆç§’ï¼‰
 constexpr double AV_SYNC_THRESHOLD_MIN = 0.04;
 constexpr double AV_SYNC_THRESHOLD_MAX = 0.1;
-// ÖØ¸´Ö¡ãĞÖµ
+// é‡å¤å¸§é˜ˆå€¼
 constexpr double AV_SYNC_FRAMEDUP_THRESHOLD = 0.1;
-// ²»Ç¿ÖÆÍ¬²½ãĞÖµ£¨³¬¹ı´ËÖµÈÏÎªÊ±ÖÓ²îÒì¹ı´ó£¬²»×öÍ¬²½£©
+// ä¸å¼ºåˆ¶åŒæ­¥é˜ˆå€¼ï¼ˆè¶…è¿‡æ­¤å€¼è®¤ä¸ºæ—¶é’Ÿå·®å¼‚è¿‡å¤§ï¼Œä¸åšåŒæ­¥ï¼‰
 constexpr double AV_NOSYNC_THRESHOLD = 10.0;
-// ÒôÆµ²ÉÑùÊıĞ£Õı×î´ó°Ù·Ö±È£¨ÓÃÓÚ¶¯Ì¬µ÷Õû²ÉÑùÊıÊµÏÖÍ¬²½£©
+// éŸ³é¢‘é‡‡æ ·æ•°æ ¡æ­£æœ€å¤§ç™¾åˆ†æ¯”ï¼ˆç”¨äºåŠ¨æ€è°ƒæ•´é‡‡æ ·æ•°å®ç°åŒæ­¥ï¼‰
 constexpr int SAMPLE_CORRECTION_PERCENT_MAX = 10;
-// ÒôÆµ²îÒìÆ½¾ùÑù±¾Êı£¨»¬¶¯Æ½¾ù£©
+// éŸ³é¢‘å·®å¼‚å¹³å‡æ ·æœ¬æ•°ï¼ˆæ»‘åŠ¨å¹³å‡ï¼‰
 constexpr int AUDIO_DIFF_AVG_NB = 20;
 
 /**
- * Í¬²½Ö÷Ê±ÖÓÀàĞÍ£º
- * - AV_SYNC_AUDIO_MASTER£ºÒÔÒôÆµÎª»ù×¼£¨×î³£ÓÃ£¬±£Ö¤ÒôÆµÁ÷³©£©
- * - AV_SYNC_VIDEO_MASTER£ºÒÔÊÓÆµÎª»ù×¼
- * - AV_SYNC_EXTERNAL_CLOCK£ºÍâ²¿ÏµÍ³Ê±ÖÓÎª»ù×¼
+ * åŒæ­¥ä¸»æ—¶é’Ÿç±»å‹ï¼š
+ * - AV_SYNC_AUDIO_MASTERï¼šä»¥éŸ³é¢‘ä¸ºåŸºå‡†ï¼ˆæœ€å¸¸ç”¨ï¼Œä¿è¯éŸ³é¢‘æµç•…ï¼‰
+ * - AV_SYNC_VIDEO_MASTERï¼šä»¥è§†é¢‘ä¸ºåŸºå‡†
+ * - AV_SYNC_EXTERNAL_CLOCKï¼šå¤–éƒ¨ç³»ç»Ÿæ—¶é’Ÿä¸ºåŸºå‡†
  */
 enum SyncType {
     AV_SYNC_AUDIO_MASTER,
@@ -63,94 +63,142 @@ enum SyncType {
     AV_SYNC_EXTERNAL_CLOCK
 };
 
-// ÌØÊâ¡°³åË¢°ü¡±Ö¸Õë£¬ÓÃÓÚ¶ÓÁĞÖĞµÄÇå³ı±ê¼Ç
+// ç‰¹æ®Šâ€œå†²åˆ·åŒ…â€æŒ‡é’ˆï¼Œç”¨äºé˜Ÿåˆ—ä¸­çš„æ¸…é™¤æ ‡è®°
 static AVPacket* flush_pkt = nullptr;
 
 /* ==========================================
- * Ê±ÖÓÄ£¿é (PlayerClock)
- * ¹ÜÀíµ¥Ò»Ê±¼äÏß£¨ÒôÆµ¡¢ÊÓÆµ»òÍâ²¿Ê±ÖÓ£©£¬Ö§³ÖÔİÍ£¡¢±¶ËÙ¡£
+ * æ—¶é’Ÿæ¨¡å— (PlayerClock)
+ * ç®¡ç†å•ä¸€æ—¶é—´çº¿ï¼ˆéŸ³é¢‘ã€è§†é¢‘æˆ–å¤–éƒ¨æ—¶é’Ÿï¼‰ï¼Œæ”¯æŒæš‚åœã€å€é€Ÿã€‚
+ * 
+ * ã€æ ¸å¿ƒè®¾è®¡æ€æƒ³ã€‘ä¸ç›´æ¥å­˜å‚¨ç»å¯¹æ—¶é—´ï¼Œè€Œæ˜¯å­˜å‚¨â€œPTSç›¸å¯¹äºç³»ç»Ÿæ—¶é—´çš„æ¼‚ç§»é‡â€ã€‚
+ * è¿™æ ·å³ä¾¿æ²¡æœ‰æ–°å¸§åˆ°æ¥ï¼Œget() ä¹Ÿèƒ½é€šè¿‡ç³»ç»Ÿæ—¶é—´æµé€æ¨ç®—å‡ºå½“å‰åº”å¤„çš„æ’­æ”¾ä½ç½®ã€‚
  * ========================================== */
 class PlayerClock {
 public:
     PlayerClock() {
         speed = 1.0;
         paused = false;
-        pts = NAN;
+        pts = NAN;              // NAN è¡¨ç¤ºæ— æ•ˆçŠ¶æ€ï¼ˆå°šæœªæ”¶åˆ°ä»»ä½•å¸§ï¼‰
         pts_drift = NAN;
         last_updated = 0.0;
         serial = 0;
     }
 
     /**
-     * ÉèÖÃµ±Ç°Ê±ÖÓÖµ£¨Í¨³£ÔÚĞÂÖ¡µ½À´Ê±µ÷ÓÃ£©
-     * @param new_pts    ĞÂµÄ PTS£¨Ãë£©
-     * @param new_serial Á÷ĞòÁĞºÅ£¨ÓÃÓÚ¶ªÆú¾ÉÊı¾İ£©
+     * è®¾ç½®å½“å‰æ—¶é’Ÿå€¼ï¼ˆé€šå¸¸åœ¨æ–°å¸§åˆ°æ¥æˆ– Seek è·³è½¬æ—¶è°ƒç”¨ï¼‰
+     * @param new_pts    æ–°çš„ PTSï¼ˆç§’ï¼‰
+     * @param new_serial æµåºåˆ—å·ï¼ˆç”¨äºä¸¢å¼ƒ Seek å‰çš„æ—§ç¼“å­˜æ•°æ®ï¼‰
+     * 
+     * ã€å…³é”®é€»è¾‘ã€‘é”šå®šæ—¶é’Ÿé”šç‚¹ï¼š
+     * è®°å½•â€œæ­¤åˆ»çš„ç³»ç»Ÿæ—¶é—´â€ï¼Œå¹¶ç®—å‡ºâ€œPTS ä¸ç³»ç»Ÿæ—¶é—´çš„å·®å€¼ï¼ˆæ¼‚ç§»ï¼‰â€ã€‚
+     * ä»¥ååªè¦ç³»ç»Ÿæ—¶é—´è¿˜åœ¨èµ°ï¼Œæˆ‘ä»¬å°±èƒ½ç”¨è¿™ä¸ªæ¼‚ç§»é‡æ¨ç®—ä»»æ„æ—¶åˆ»çš„ PTSã€‚
      */
     void set(double new_pts, int new_serial) {
-        double time = av_gettime_relative() / 1000000.0;  // µ±Ç°ÏµÍ³Ê±¼ä£¨Ãë£©
+        // av_gettime_relative() è¿”å›å•è°ƒé€’å¢çš„ç³»ç»Ÿæ—¶é—´ï¼ˆä¸å—ç³»ç»Ÿæ—¶é—´è°ƒæ•´å½±å“ï¼‰
+        double time = av_gettime_relative() / 1000000.0;  
+        
         pts = new_pts;
-        last_updated = time;
-        pts_drift = new_pts - time;  // Æ¯ÒÆ = PTS - ÏµÍ³Ê±¼ä
+        last_updated = time;                 // é”šå®šæ—¶åˆ»çš„ç³»ç»Ÿæ—¶é—´
+        pts_drift = new_pts - time;          // æ¼‚ç§»é‡ = æƒ³è¾¾åˆ°çš„PTS - å½“å‰ç³»ç»Ÿæ—¶é—´
         serial = new_serial;
     }
 
     /**
-     * »ñÈ¡µ±Ç°Ê±ÖÓÖµ£¨¿¼ÂÇÁ÷ÊÅµÄÊ±¼ä£¬ÈôÔİÍ£Ôò·µ»Ø¹Ì¶¨ PTS£©
-     * @return µ±Ç°Ê±ÖÓÖµ£¨Ãë£©£¬ÈôÎŞĞ§Ôò·µ»Ø NAN
+     * è·å–å½“å‰æ—¶é’Ÿå€¼ï¼ˆè€ƒè™‘æµé€çš„æ—¶é—´ï¼Œè‹¥æš‚åœåˆ™è¿”å›å›ºå®š PTSï¼‰
+     * @return å½“å‰æ—¶é’Ÿå€¼ï¼ˆç§’ï¼‰ï¼Œè‹¥ä»æœª set è¿‡åˆ™è¿”å› NAN
+     * 
+     * ã€æ•°å­¦æ¨å¯¼ã€‘å®Œæ•´è®¡ç®—å…¬å¼ï¼š
+     * result = pts_drift + time - (time - last_updated) * (1.0 - speed)
+     * 
+     * 1. å½“ speed = 1.0ï¼ˆæ­£å¸¸æ’­æ”¾ï¼‰ï¼š
+     *    å…¬å¼é€€åŒ–ä¸º pts_drift + timeï¼Œå³â€œç³»ç»Ÿæ—¶é—´ + å›ºå®šåç§»â€ï¼Œå®Œå…¨è·Ÿéšç‰©ç†æ—¶é—´ã€‚
+     * 
+     * 2. å½“ speed = 2.0ï¼ˆ2å€é€Ÿå¿«è¿›ï¼‰ï¼š
+     *    å…¬å¼å˜ä¸º pts_drift + time + (time - last_updated)ã€‚
+     *    å³â€œä¸Šæ¬¡æ›´æ–°åæµé€çš„æ¯ä¸€ç§’ï¼Œåœ¨æ—¶é’Ÿé‡Œè¦ç®—ä½œ 2 ç§’â€ï¼Œå®ç°æ—¶é—´åŠ é€Ÿã€‚
+     * 
+     * 3. å½“ speed = 0.5ï¼ˆ0.5å€æ…¢æ”¾ï¼‰ï¼š
+     *    å…¬å¼å˜ä¸º pts_drift + time - 0.5 * (time - last_updated)ã€‚
+     *    å³â€œä¸Šæ¬¡æ›´æ–°åæµé€çš„æ¯ä¸€ç§’ï¼Œåœ¨æ—¶é’Ÿé‡Œåªç®— 0.5 ç§’â€ï¼Œå®ç°æ—¶é—´å‡é€Ÿã€‚
      */
     double get() {
+        // æš‚åœçŠ¶æ€ä¸‹æ—¶é’Ÿå®Œå…¨å†»ç»“ï¼Œå§‹ç»ˆè¿”å›ä¸Šæ¬¡è®¾ç½®çš„å›ºå®š PTS
         if (paused) return pts;
+        
+        // å¦‚æœä»æœªåˆå§‹åŒ–è¿‡ï¼ˆpts æ— æ•ˆï¼‰ï¼Œåˆ™è¿”å›æ— æ•ˆå€¼
         if (std::isnan(pts)) return NAN;
+        
         double time = av_gettime_relative() / 1000000.0;
-        // ¹«Ê½£ºpts_drift + time - (time - last_updated) * (1.0 - speed)
-        // µ± speed=1.0 Ê±£¬¼ò»¯Îª pts_drift + time£¬¼´Ô­Ê¼ PTS ¸úËæÏµÍ³Ê±¼äÍÆ½ø
+        
+        // æ ¸å¿ƒè®¡ç®—ï¼špts_drift æ˜¯åŸºå‡†åç§»ï¼Œåé¢çš„ä¿®æ­£é¡¹è´Ÿè´£å¤„ç†å€é€Ÿå¸¦æ¥çš„æ—¶é—´ç¼©æ”¾
         return pts_drift + time - (time - last_updated) * (1.0 - speed);
     }
 
     /**
-     * ÉèÖÃÔİÍ£×´Ì¬
-     * @param p true ÔİÍ££¬false »Ö¸´
+     * è®¾ç½®æš‚åœçŠ¶æ€
+     * @param p true æš‚åœï¼Œfalse æ¢å¤
+     * 
+     * ã€æ¢å¤æ—¶çš„å…³é”®æ“ä½œã€‘ï¼š
+     * æš‚åœæœŸé—´ç³»ç»Ÿæ—¶é—´ä¾ç„¶åœ¨é£å¥”ï¼ˆæ¯”å¦‚æš‚åœäº† 10 ç§’ï¼‰ã€‚
+     * å¦‚æœæ¢å¤æ—¶ä¸é‡æ–°é”šå®šï¼Œget() ä¼šç¬é—´è·³è¿‡ 10 ç§’çš„å†…å®¹ï¼ˆç”»é¢è·³è·ƒï¼‰ã€‚
+     * å› æ­¤æ¢å¤æ—¶ç«‹å³è°ƒç”¨ set(get(), serial)ï¼š
+     *   1. get() è¿”å›æš‚åœé‚£ä¸€åˆ»çš„å›ºå®š PTSï¼ˆæ¯”å¦‚ 10.5 ç§’ï¼‰
+     *   2. set() ç”¨â€œå½“å‰ç³»ç»Ÿæ—¶é—´â€å’Œâ€œ10.5 ç§’â€é‡æ–°è®¡ç®— pts_drift
+     *   3. æ­¤åæ—¶é’Ÿä» 10.5 ç§’æ¥ç€èµ°ï¼Œå®Œç¾è¡”æ¥ï¼Œæ— è·³è·ƒã€‚
      */
     void set_paused(bool p) {
         if (paused != p) {
             paused = p;
-            if (!p) {
-                // »Ö¸´Ê±ÖØĞÂĞ£×¼µ±Ç°Ê±¼ä£¬±ÜÃâÌøÔ¾
+            if (!p) {  // ä»æš‚åœæ¢å¤
+                // ä¼ å…¥å½“å‰ paused çŠ¶æ€ä¸‹çš„ ptsï¼ˆå³å†»ç»“æ—¶çš„é‚£ä¸€å¸§æ—¶é—´ï¼‰å’Œå½“å‰ç³»ç»Ÿæ—¶é—´é‡æ–°é”šå®š
                 set(get(), serial);
             }
         }
     }
 
     /**
-     * ½«µ±Ç°Ê±ÖÓÍ¬²½µ½´ÓÊ±ÖÓ£¨ÓÃÓÚÍâ²¿Ê±ÖÓ¸úËæÖ÷Ê±ÖÓ£©
-     * @param slave ´ÓÊ±ÖÓ£¨ÈçÍâ²¿Ê±ÖÓ¸úËæÒôÆµ»òÊÓÆµ£©
+     * ä¸»ä»åŒæ­¥ï¼ˆè§£å†³æ—¶é’Ÿè·‘é£ï¼‰
+     * @param slave ä»æ—¶é’Ÿï¼ˆä¾‹å¦‚å¤–éƒ¨æ—¶é’Ÿä½œä¸ºä¸»ï¼ŒéŸ³è§†é¢‘æ—¶é’Ÿä½œä¸ºä»ï¼‰
+     * 
+     * ã€è°ƒç”¨åœºæ™¯ã€‘å½“åŒæ­¥æ¨¡å¼ä¸º AV_SYNC_EXTERNAL_CLOCK æ—¶ï¼š
+     * å¤–éƒ¨æ—¶é’Ÿï¼ˆä¸»ï¼‰æ¯éš”ä¸€æ®µæ—¶é—´è°ƒç”¨æ­¤å‡½æ•°ï¼Œä¼ å…¥éŸ³/è§†é¢‘æ—¶é’Ÿï¼ˆä»ï¼‰ã€‚
+     * 
+     * ã€æ‰§è¡Œé€»è¾‘ã€‘å¦‚æœå½“å‰æ—¶é’Ÿï¼ˆä¸»æ—¶é’Ÿï¼‰æ— æ•ˆï¼Œæˆ–è€…ä¸»æ—¶é’Ÿä¸ä»æ—¶é’Ÿçš„åå·® 
+     * è¶…è¿‡äº† AV_NOSYNC_THRESHOLDï¼ˆ10ç§’ï¼Œå®šä¹‰åœ¨å…¨å±€å¸¸é‡ä¸­ï¼‰ï¼Œ
+     * è¯´æ˜ä¸»æ—¶é’Ÿç”±äºå¼‚å¸¸è·‘é£äº†ï¼Œè¿™æ—¶å¼ºåˆ¶æ”¾å¼ƒä¸»æ—¶é’Ÿè‡ªå·±çš„å€¼ï¼Œç›´æ¥è¿½é½ä»æ—¶é’Ÿã€‚
+     * è¿™é¿å…äº†éŸ³ç”»å½»åº•ä¸åŒæ­¥å¯¼è‡´çš„ç³Ÿç³•ä½“éªŒã€‚
      */
     void sync_to_slave(PlayerClock& slave) {
-        double slave_time = slave.get();
-        double master_time = get();
-        // Èô´ÓÊ±ÖÓÓĞĞ§ÇÒÓëÖ÷Ê±ÖÓ²îÒì³¬¹ıãĞÖµ£¬ÔòÇ¿ÖÆ×·Æë
+        double slave_time = slave.get();   // ä»æ—¶é’Ÿçš„å€¼ï¼ˆå¯é å‚è€ƒï¼‰
+        double master_time = get();        // å½“å‰ä¸»æ—¶é’Ÿçš„å€¼
+        
+        // è‹¥ä¸»æ—¶é’Ÿæ— æ•ˆï¼Œæˆ–ä¸»ä»å·®å¼‚è¶…è¿‡äº†â€œæ”¾å¼ƒåŒæ­¥â€çš„æé™é˜ˆå€¼ï¼ˆ10ç§’ï¼‰
         if (!std::isnan(slave_time) && (std::isnan(master_time) || std::fabs(master_time - slave_time) > AV_NOSYNC_THRESHOLD)) {
+            // å¼ºåˆ¶å°†ä¸»æ—¶é’Ÿçš„å€¼è®¾ç½®ä¸ºä»æ—¶é’Ÿçš„å€¼ï¼Œå¹¶ä½¿ç”¨ä»æ—¶é’Ÿçš„åºåˆ—å·ï¼ˆä¸¢å¼ƒæ—§æ•°æ®ï¼‰
             set(slave_time, slave.serial);
         }
     }
 
 public:
-    double pts;            // µ±Ç° PTS£¨Ãë£©
-    double pts_drift;      // PTS ÓëÏµÍ³Ê±¼ä²îÖµ
-    double last_updated;   // ×î½üÒ»´Î set() Ê±µÄÏµÍ³Ê±¼ä
-    double speed;          // ²¥·Å±¶ËÙ£¨Î´ÍêÕûÊµÏÖ£©
-    int serial;            // ĞòÁĞºÅ£¬ÓÃÓÚÇø·Ö²»Í¬Á÷ÖØÖÃ
-    bool paused;           // ÊÇ·ñÔİÍ£
+    // ==================== çŠ¶æ€å˜é‡ ====================
+    
+    double pts;            // å½“å‰æœ€æ–°çš„ PTS å€¼ï¼ˆç§’ï¼‰ï¼Œä½œä¸ºé”šå®šåŸºå‡†ç‚¹
+    double pts_drift;      // æ ¸å¿ƒæ¼‚ç§»é‡ï¼šPTS - é”šå®šæ—¶çš„ç³»ç»Ÿæ—¶é—´ï¼Œå†³å®šäº†æ—¶é’Ÿæ›²çº¿çš„æˆªè·
+    double last_updated;   // æœ€è¿‘ä¸€æ¬¡è°ƒç”¨ set() æ—¶çš„ç³»ç»Ÿæ—¶é—´ï¼ˆç§’ï¼‰ï¼Œç”¨äºè®¡ç®—æ—¶é—´å¢é‡
+    double speed;          // æ’­æ”¾å€é€Ÿï¼ˆ1.0 æ­£å¸¸ï¼Œ>1 å¿«è¿›ï¼Œ<1 æ…¢æ”¾ï¼‰
+    int serial;            // æµåºåˆ—å·ã€‚æ¯æ¬¡ Seek æˆ–æ¢æµæ—¶è‡ªå¢ï¼Œset() æ—¶ä¼šå¸¦ä¸Šè¯¥åºå·ï¼Œ
+                           // é…åˆå¤–éƒ¨é€»è¾‘ä¸¢å¼ƒ serial ä¸åŒ¹é…çš„æ—§å¸§ï¼Œé˜²æ­¢æ—§æ•°æ®æ±¡æŸ“æ–°æ—¶é’Ÿ
+    bool paused;           // æš‚åœæ ‡å¿—ä½ï¼ˆtrue æ—¶ get() å›ºå®šè¿”å› ptsï¼‰
 };
 
 /* ==========================================
- * Ïß³Ì°²È«°ü¶ÓÁĞ (PacketQueue)
- * ÓÃÓÚ´æ·Å½â¸´ÓÃ³öÀ´µÄ AVPacket£¬Ö§³Ö¶àÏß³Ì¶Á/Ğ´¡£
+ * çº¿ç¨‹å®‰å…¨åŒ…é˜Ÿåˆ— (PacketQueue)
+ * ç”¨äºå­˜æ”¾è§£å¤ç”¨å‡ºæ¥çš„ AVPacketï¼Œæ”¯æŒå¤šçº¿ç¨‹è¯»/å†™ã€‚
  * ========================================== */
 
 struct PacketItem {
-    AVPacket* pkt;   // °üÖ¸Õë£¨¿ÉÄÜÎª flush_pkt£©
-    int serial;      // ĞòÁĞºÅ
+    AVPacket* pkt;   // åŒ…æŒ‡é’ˆï¼ˆå¯èƒ½ä¸º flush_pktï¼‰
+    int serial;      // åºåˆ—å·
 };
 
 class PacketQueue {
@@ -159,7 +207,7 @@ public:
     ~PacketQueue() { flush(); }
 
     /**
-     * Æô¶¯¶ÓÁĞ£¨·ÅÈëÒ»¸ö³åË¢°ü£¬ÖØÖÃĞòÁĞºÅ£©
+     * å¯åŠ¨é˜Ÿåˆ—ï¼ˆæ”¾å…¥ä¸€ä¸ªå†²åˆ·åŒ…ï¼Œé‡ç½®åºåˆ—å·ï¼‰
      */
     void start() {
         std::lock_guard<std::mutex> lock(mtx);
@@ -168,7 +216,7 @@ public:
     }
 
     /**
-     * ÖĞÖ¹¶ÓÁĞ£¬»½ĞÑËùÓĞµÈ´ıÏß³Ì
+     * ä¸­æ­¢é˜Ÿåˆ—ï¼Œå”¤é†’æ‰€æœ‰ç­‰å¾…çº¿ç¨‹
      */
     void abort() {
         {
@@ -179,7 +227,7 @@ public:
     }
 
     /**
-     * ·ÅÈëÒ»¸ö³åË¢°ü£¬ÓÃÓÚÇåÀí½âÂëÆ÷»º´æ²¢ÖØĞÂÍ¬²½
+     * æ”¾å…¥ä¸€ä¸ªå†²åˆ·åŒ…ï¼Œç”¨äºæ¸…ç†è§£ç å™¨ç¼“å­˜å¹¶é‡æ–°åŒæ­¥
      */
     void put_flush_packet() {
         serial++;
@@ -187,9 +235,9 @@ public:
     }
 
     /**
-     * ·ÅÈëÒ»¸öÆÕÍ¨ AVPacket£¨»áÉî¿½±´£©
-     * @param pkt Ô´°ü£¨²»»á±»ÊÍ·Å£¬µ÷ÓÃÕßĞè×ÔĞĞ´¦Àí£©
-     * @return ÊÇ·ñ³É¹¦
+     * æ”¾å…¥ä¸€ä¸ªæ™®é€š AVPacketï¼ˆä¼šæ·±æ‹·è´ï¼‰
+     * @param pkt æºåŒ…ï¼ˆä¸ä¼šè¢«é‡Šæ”¾ï¼Œè°ƒç”¨è€…éœ€è‡ªè¡Œå¤„ç†ï¼‰
+     * @return æ˜¯å¦æˆåŠŸ
      */
     bool put(AVPacket* pkt) {
         std::lock_guard<std::mutex> lock(mtx);
@@ -198,10 +246,10 @@ public:
     }
 
     /**
-     * È¡³öÒ»¸ö°ü£¨×èÈûÖ±µ½ÓĞ°ü»òÖĞÖ¹£©
-     * @param out_pkt    Êä³ö°üÖ¸Õë£¨µ÷ÓÃÕßĞè av_packet_free£©
-     * @param out_serial Êä³öĞòÁĞºÅ
-     * @return ³É¹¦·µ»Ø true£¬ÖĞÖ¹·µ»Ø false
+     * å–å‡ºä¸€ä¸ªåŒ…ï¼ˆé˜»å¡ç›´åˆ°æœ‰åŒ…æˆ–ä¸­æ­¢ï¼‰
+     * @param out_pkt    è¾“å‡ºåŒ…æŒ‡é’ˆï¼ˆè°ƒç”¨è€…éœ€ av_packet_freeï¼‰
+     * @param out_serial è¾“å‡ºåºåˆ—å·
+     * @return æˆåŠŸè¿”å› trueï¼Œä¸­æ­¢è¿”å› false
      */
     bool get(AVPacket** out_pkt, int& out_serial) {
         std::unique_lock<std::mutex> lock(mtx);
@@ -218,12 +266,12 @@ public:
                 out_serial = item.serial;
                 return true;
             }
-            cv.wait(lock);  // ÎŞ°üÊ±µÈ´ı
+            cv.wait(lock);  // æ— åŒ…æ—¶ç­‰å¾…
         }
     }
 
     /**
-     * Çå¿Õ¶ÓÁĞÖĞËùÓĞ°ü£¨ÊÍ·ÅÆÕÍ¨°ü£¬±£Áô³åË¢°ü±ê¼Ç£©
+     * æ¸…ç©ºé˜Ÿåˆ—ä¸­æ‰€æœ‰åŒ…ï¼ˆé‡Šæ”¾æ™®é€šåŒ…ï¼Œä¿ç•™å†²åˆ·åŒ…æ ‡è®°ï¼‰
      */
     void flush() {
         std::lock_guard<std::mutex> lock(mtx);
@@ -238,24 +286,24 @@ public:
         nb_packets = 0;
     }
 
-    /* ²éÑ¯½Ó¿Ú */
+    /* æŸ¥è¯¢æ¥å£ */
     int get_size() const { return size; }
     int get_nb_packets() const { return nb_packets; }
     int get_serial() const { return serial; }
 
 private:
     /**
-     * ÄÚ²¿·ÅÈëÂß¼­£ºÉî¿½±´°ü»òÖ±½ÓÊ¹ÓÃ³åË¢°ü
+     * å†…éƒ¨æ”¾å…¥é€»è¾‘ï¼šæ·±æ‹·è´åŒ…æˆ–ç›´æ¥ä½¿ç”¨å†²åˆ·åŒ…
      */
     bool put_internal(AVPacket* pkt) {
         AVPacket* new_pkt = nullptr;
         if (pkt != flush_pkt) {
             new_pkt = av_packet_alloc();
             if (!new_pkt) return false;
-            av_packet_ref(new_pkt, pkt);   // Éî¿½±´
+            av_packet_ref(new_pkt, pkt);   // æ·±æ‹·è´
         }
         else {
-            new_pkt = flush_pkt;           // ³åË¢°üÖ±½ÓÊ¹ÓÃÈ«¾ÖÖ¸Õë
+            new_pkt = flush_pkt;           // å†²åˆ·åŒ…ç›´æ¥ä½¿ç”¨å…¨å±€æŒ‡é’ˆ
         }
         queue.push({ new_pkt, serial });
         nb_packets++;
@@ -270,28 +318,28 @@ private:
     std::mutex mtx;
     std::condition_variable cv;
     std::atomic<bool> abort_request;
-    int serial;          // µ±Ç°ĞòÁĞºÅ£¨Ã¿´Î³åË¢µİÔö£©
-    int size;            // ¶ÓÁĞÖĞ°ü×Ü×Ö½ÚÊı
-    int nb_packets;      // °üÊıÁ¿
+    int serial;          // å½“å‰åºåˆ—å·ï¼ˆæ¯æ¬¡å†²åˆ·é€’å¢ï¼‰
+    int size;            // é˜Ÿåˆ—ä¸­åŒ…æ€»å­—èŠ‚æ•°
+    int nb_packets;      // åŒ…æ•°é‡
 };
 
 /* ==========================================
- * Ïß³Ì°²È«Ö¡¶ÓÁĞ (FrameQueue)
- * ´æ·Å½âÂëºóµÄ AVFrame£¨ÊÓÆµ»òÒôÆµ£©£¬»·ĞÎ»º³åÇø£¬Ö§³Ö±£³Ö×îºóÒ»Ö¡¡£
+ * çº¿ç¨‹å®‰å…¨å¸§é˜Ÿåˆ— (FrameQueue)
+ * å­˜æ”¾è§£ç åçš„ AVFrameï¼ˆè§†é¢‘æˆ–éŸ³é¢‘ï¼‰ï¼Œç¯å½¢ç¼“å†²åŒºï¼Œæ”¯æŒä¿æŒæœ€åä¸€å¸§ã€‚
  * ========================================== */
 
 struct FrameItem {
     AVFrame* frame = nullptr;
     double pts = 0.0;
-    double duration = 0.0;  // ÒôÆµÖ¡³ÖĞøÊ±¼ä£¬ÊÓÆµÖ¡¿ÉºöÂÔ
+    double duration = 0.0;  // éŸ³é¢‘å¸§æŒç»­æ—¶é—´ï¼Œè§†é¢‘å¸§å¯å¿½ç•¥
     int serial = 0;
 };
 
 class FrameQueue {
 public:
     /**
-     * @param max_capacity     »·ĞÎ»º³åÇøÈİÁ¿
-     * @param keep_last_frame  ÊÇ·ñ±£Áô×îºóÒ»Ö¡£¨ÓÃÓÚÔİÍ£Ê±ÏÔÊ¾£©
+     * @param max_capacity     ç¯å½¢ç¼“å†²åŒºå®¹é‡
+     * @param keep_last_frame  æ˜¯å¦ä¿ç•™æœ€åä¸€å¸§ï¼ˆç”¨äºæš‚åœæ—¶æ˜¾ç¤ºï¼‰
      */
     FrameQueue(int max_capacity, bool keep_last_frame = true)
         : max_size(max_capacity), keep_last(keep_last_frame), rindex(0), windex(0),
@@ -312,7 +360,7 @@ public:
     }
 
     /**
-     * ÖĞÖ¹¶ÓÁĞ£¬»½ĞÑµÈ´ıÏß³Ì
+     * ä¸­æ­¢é˜Ÿåˆ—ï¼Œå”¤é†’ç­‰å¾…çº¿ç¨‹
      */
     void abort() {
         {
@@ -323,8 +371,8 @@ public:
     }
 
     /**
-     * »ñÈ¡¿ÉĞ´µÄÖ¡²Û£¨×èÈûÖ±µ½ÓĞ¿ÕÎ»»òÖĞÖ¹£©
-     * @return Ö¡²ÛÖ¸Õë£¬ÈôÖĞÖ¹Ôò·µ»Ø nullptr
+     * è·å–å¯å†™çš„å¸§æ§½ï¼ˆé˜»å¡ç›´åˆ°æœ‰ç©ºä½æˆ–ä¸­æ­¢ï¼‰
+     * @return å¸§æ§½æŒ‡é’ˆï¼Œè‹¥ä¸­æ­¢åˆ™è¿”å› nullptr
      */
     FrameItem* peek_writable() {
         std::unique_lock<std::mutex> lock(mtx);
@@ -336,7 +384,7 @@ public:
     }
 
     /**
-     * ½«µ±Ç°Ğ´Î»ÖÃÍÆ½ø£¨±íÊ¾ÒÑĞ´ÈëÒ»Ö¡£©
+     * å°†å½“å‰å†™ä½ç½®æ¨è¿›ï¼ˆè¡¨ç¤ºå·²å†™å…¥ä¸€å¸§ï¼‰
      */
     void push() {
         {
@@ -348,8 +396,8 @@ public:
     }
 
     /**
-     * »ñÈ¡¿É¶ÁµÄÖ¡²Û£¨×èÈûÖ±µ½ÓĞÖ¡»òÖĞÖ¹£©
-     * @return Ö¡²ÛÖ¸Õë£¬ÈôÖĞÖ¹Ôò·µ»Ø nullptr
+     * è·å–å¯è¯»çš„å¸§æ§½ï¼ˆé˜»å¡ç›´åˆ°æœ‰å¸§æˆ–ä¸­æ­¢ï¼‰
+     * @return å¸§æ§½æŒ‡é’ˆï¼Œè‹¥ä¸­æ­¢åˆ™è¿”å› nullptr
      */
     FrameItem* peek_readable() {
         std::unique_lock<std::mutex> lock(mtx);
@@ -361,29 +409,29 @@ public:
     }
 
     /**
-     * »ñÈ¡×îºóÒ»Ö¡£¨ÓÃÓÚäÖÈ¾ÔİÍ£»­Ãæ£©
+     * è·å–æœ€åä¸€å¸§ï¼ˆç”¨äºæ¸²æŸ“æš‚åœç”»é¢ï¼‰
      */
     FrameItem* peek_last() {
         return &queue[rindex];
     }
 
     /**
-     * Ïû·Ñµ±Ç°¿É¶ÁÖ¡£¬ÍÆ½ø¶ÁÎ»ÖÃ
+     * æ¶ˆè´¹å½“å‰å¯è¯»å¸§ï¼Œæ¨è¿›è¯»ä½ç½®
      */
     void next() {
         std::lock_guard<std::mutex> lock(mtx);
         if (keep_last && !rindex_shown) {
-            rindex_shown = 1;   // µÚÒ»Ö¡±£Áô£¬²»ÊÍ·Å
+            rindex_shown = 1;   // ç¬¬ä¸€å¸§ä¿ç•™ï¼Œä¸é‡Šæ”¾
             return;
         }
-        av_frame_unref(queue[rindex].frame);  // ÊÍ·ÅÖ¡ÄÚÈİ
+        av_frame_unref(queue[rindex].frame);  // é‡Šæ”¾å¸§å†…å®¹
         rindex = (rindex + 1) % max_size;
         size--;
         cv.notify_all();
     }
 
     /**
-     * ·µ»ØÊ£Óà¿É¶ÁÖ¡Êı£¨²»°üÀ¨±£ÁôµÄ×îºóÒ»Ö¡£©
+     * è¿”å›å‰©ä½™å¯è¯»å¸§æ•°ï¼ˆä¸åŒ…æ‹¬ä¿ç•™çš„æœ€åä¸€å¸§ï¼‰
      */
     int nb_remaining() {
         std::lock_guard<std::mutex> lock(mtx);
@@ -394,30 +442,30 @@ private:
     std::vector<FrameItem> queue;
     int max_size;
     bool keep_last;
-    int rindex;           // ¶ÁË÷Òı£¨×îºó·µ»ØµÄÖ¡£©
-    int windex;           // Ğ´Ë÷Òı
-    int size;             // µ±Ç°Ö¡×ÜÊı£¨°üÀ¨±£ÁôÖ¡£©
-    int rindex_shown;     // ÊÇ·ñÒÑÏÔÊ¾µÚÒ»Ö¡£¨ÓÃÓÚ keep_last£©
+    int rindex;           // è¯»ç´¢å¼•ï¼ˆæœ€åè¿”å›çš„å¸§ï¼‰
+    int windex;           // å†™ç´¢å¼•
+    int size;             // å½“å‰å¸§æ€»æ•°ï¼ˆåŒ…æ‹¬ä¿ç•™å¸§ï¼‰
+    int rindex_shown;     // æ˜¯å¦å·²æ˜¾ç¤ºç¬¬ä¸€å¸§ï¼ˆç”¨äº keep_lastï¼‰
     std::mutex mtx;
     std::condition_variable cv;
     std::atomic<bool> abort_request;
 };
 
 /* ==========================================
- * ÒôÆµ²ÎÊı½á¹¹ (AudioParams)
- * ÃèÊöÄ¿±êÒôÆµ¸ñÊ½£¨ÖØ²ÉÑùºóµÄ¸ñÊ½£©
+ * éŸ³é¢‘å‚æ•°ç»“æ„ (AudioParams)
+ * æè¿°ç›®æ ‡éŸ³é¢‘æ ¼å¼ï¼ˆé‡é‡‡æ ·åçš„æ ¼å¼ï¼‰
  * ========================================== */
 struct AudioParams {
-    int freq;                           // ²ÉÑùÂÊ
-    AVChannelLayout ch_layout;          // ÉùµÀ²¼¾Ö
-    enum AVSampleFormat fmt;            // ²ÉÑù¸ñÊ½
-    int frame_size;                     // Ã¿Ö¡×Ö½ÚÊı£¨µ¥ÉùµÀÑù±¾×Ö½ÚÊı£©
-    int bytes_per_sec;                  // Ã¿Ãë×Ö½ÚÊı
+    int freq;                           // é‡‡æ ·ç‡
+    AVChannelLayout ch_layout;          // å£°é“å¸ƒå±€
+    enum AVSampleFormat fmt;            // é‡‡æ ·æ ¼å¼
+    int frame_size;                     // æ¯å¸§å­—èŠ‚æ•°ï¼ˆå•å£°é“æ ·æœ¬å­—èŠ‚æ•°ï¼‰
+    int bytes_per_sec;                  // æ¯ç§’å­—èŠ‚æ•°
 };
 
 /* ==========================================
- * ²¥·ÅÆ÷Ö÷ÄÚºËÀà (ModernPlayer)
- * Ğ­µ÷ËùÓĞÏß³Ì¡¢¶ÓÁĞ¡¢Ê±ÖÓ¡¢SDL3 äÖÈ¾ºÍÒôÆµÊä³ö¡£
+ * æ’­æ”¾å™¨ä¸»å†…æ ¸ç±» (ModernPlayer)
+ * åè°ƒæ‰€æœ‰çº¿ç¨‹ã€é˜Ÿåˆ—ã€æ—¶é’Ÿã€SDL3 æ¸²æŸ“å’ŒéŸ³é¢‘è¾“å‡ºã€‚
  * ========================================== */
 class ModernPlayer {
 public:
@@ -432,7 +480,7 @@ public:
         audio_buf_size(0), audio_buf_index(0), audio_clock(0.0),
         audio_diff_cum(0.0), audio_diff_avg_count(0), frame_timer(0.0),
         audio_stream(nullptr) {
-        // ÉèÖÃÄ¿±êÒôÆµ¸ñÊ½£ºÁ¢ÌåÉù 44100Hz S16
+        // è®¾ç½®ç›®æ ‡éŸ³é¢‘æ ¼å¼ï¼šç«‹ä½“å£° 44100Hz S16
         av_channel_layout_default(&audio_tgt.ch_layout, 2);
         audio_tgt.freq = 44100;
         audio_tgt.fmt = AV_SAMPLE_FMT_S16;
@@ -444,37 +492,37 @@ public:
     ~ModernPlayer() { stop(); }
 
     /**
-     * ´ò¿ªÃ½ÌåÎÄ¼ş£¬Æô¶¯ËùÓĞÏß³Ì
-     * @param url ÎÄ¼şÂ·¾¶»òÍøÂç URL
-     * @return ³É¹¦ true
+     * æ‰“å¼€åª’ä½“æ–‡ä»¶ï¼Œå¯åŠ¨æ‰€æœ‰çº¿ç¨‹
+     * @param url æ–‡ä»¶è·¯å¾„æˆ–ç½‘ç»œ URL
+     * @return æˆåŠŸ true
      */
     bool open(const std::string& url) {
         file_url = url;
         abort_request = false;
 
-        // ---------- ½â¸´ÓÃÆ÷³õÊ¼»¯ ----------
+        // ---------- è§£å¤ç”¨å™¨åˆå§‹åŒ– ----------
         fmt_ctx = avformat_alloc_context();
         if (avformat_open_input(&fmt_ctx, file_url.c_str(), nullptr, nullptr) < 0) return false;
         if (avformat_find_stream_info(fmt_ctx, nullptr) < 0) return false;
 
-        // Ñ°ÕÒ×î¼ÑÒôÊÓÆµÁ÷
+        // å¯»æ‰¾æœ€ä½³éŸ³è§†é¢‘æµ
         audio_stream_idx = av_find_best_stream(fmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
         video_stream_idx = av_find_best_stream(fmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
 
-        // ´ò¿ª½âÂëÆ÷ÉÏÏÂÎÄ
+        // æ‰“å¼€è§£ç å™¨ä¸Šä¸‹æ–‡
         if (audio_stream_idx >= 0) open_codec_context(audio_stream_idx);
         if (video_stream_idx >= 0) open_codec_context(video_stream_idx);
 
-        // ---------- SDL3 ÒôÆµÉè±¸³õÊ¼»¯ ----------
+        // ---------- SDL3 éŸ³é¢‘è®¾å¤‡åˆå§‹åŒ– ----------
         if (audio_stream_idx >= 0) {
             init_sdl3_audio();
         }
 
-        // Æô¶¯°ü¶ÓÁĞ£¨·ÅÈë³åË¢°ü£©
+        // å¯åŠ¨åŒ…é˜Ÿåˆ—ï¼ˆæ”¾å…¥å†²åˆ·åŒ…ï¼‰
         audio_pq.start();
         video_pq.start();
 
-        // Æô¶¯Èı¸öºËĞÄÏß³Ì
+        // å¯åŠ¨ä¸‰ä¸ªæ ¸å¿ƒçº¿ç¨‹
         read_th = std::thread(&ModernPlayer::read_thread, this);
         if (audio_stream_idx >= 0) audio_decode_th = std::thread(&ModernPlayer::audio_decode_thread, this);
         if (video_stream_idx >= 0) video_decode_th = std::thread(&ModernPlayer::video_decode_thread, this);
@@ -483,7 +531,7 @@ public:
     }
 
     /**
-     * Í£Ö¹²¥·Å£¬µÈ´ıËùÓĞÏß³ÌÍË³ö£¬ÊÍ·Å×ÊÔ´
+     * åœæ­¢æ’­æ”¾ï¼Œç­‰å¾…æ‰€æœ‰çº¿ç¨‹é€€å‡ºï¼Œé‡Šæ”¾èµ„æº
      */
     void stop() {
         abort_request = true;
@@ -496,13 +544,13 @@ public:
         if (audio_decode_th.joinable()) audio_decode_th.join();
         if (video_decode_th.joinable()) video_decode_th.join();
 
-        // Ïú»Ù SDL3 ÒôÆµÁ÷
+        // é”€æ¯ SDL3 éŸ³é¢‘æµ
         if (audio_stream) {
             SDL_DestroyAudioStream(audio_stream);
             audio_stream = nullptr;
         }
 
-        // ÊÍ·Å FFmpeg ×ÊÔ´
+        // é‡Šæ”¾ FFmpeg èµ„æº
         if (swr_ctx) { swr_free(&swr_ctx); }
         if (sws_ctx) { sws_freeContext(sws_ctx); sws_ctx = nullptr; }
         if (audio_codec_ctx) { avcodec_free_context(&audio_codec_ctx); }
@@ -512,20 +560,20 @@ public:
         av_channel_layout_uninit(&audio_tgt.ch_layout);
     }
 
-    /* ==================== ¿ØÖÆ½Ó¿Ú ==================== */
+    /* ==================== æ§åˆ¶æ¥å£ ==================== */
 
-    /** ÇĞ»»²¥·Å/ÔİÍ£ */
+    /** åˆ‡æ¢æ’­æ”¾/æš‚åœ */
     void toggle_pause() {
         set_pause(!paused);
         step = false;
     }
 
-    /** ÉèÖÃÔİÍ£×´Ì¬ */
+    /** è®¾ç½®æš‚åœçŠ¶æ€ */
     void set_pause(bool p) {
         if (paused != p) {
             paused = p;
             if (!p) {
-                // »Ö¸´Ê±µ÷ÕûÊÓÆµÖ¡¼ÆÊ±Æ÷£¬±ÜÃâÌøÔ¾
+                // æ¢å¤æ—¶è°ƒæ•´è§†é¢‘å¸§è®¡æ—¶å™¨ï¼Œé¿å…è·³è·ƒ
                 double time = av_gettime_relative() / 1000000.0;
                 frame_timer += time - vidclk.last_updated;
                 if (audio_stream) SDL_ResumeAudioStreamDevice(audio_stream);
@@ -539,7 +587,7 @@ public:
         }
     }
 
-    /** ÖğÖ¡²¥·Å£¨ÔİÍ£Ê±°´ S ¼üµ÷ÓÃ£© */
+    /** é€å¸§æ’­æ”¾ï¼ˆæš‚åœæ—¶æŒ‰ S é”®è°ƒç”¨ï¼‰ */
     void step_to_next_frame() {
         if (paused) {
             set_pause(false);
@@ -547,29 +595,29 @@ public:
         step = true;
     }
 
-    /** ÒôÁ¿µ÷½Ú£¨¡À0.05£© */
+    /** éŸ³é‡è°ƒèŠ‚ï¼ˆÂ±0.05ï¼‰ */
     void adjust_volume(float delta) {
         audio_volume = std::clamp(audio_volume + delta, 0.0f, 1.0f);
     }
 
-    /** ÇĞ»»¾²Òô */
+    /** åˆ‡æ¢é™éŸ³ */
     void toggle_mute() {
         muted = !muted;
     }
 
-    /** ÇĞ»»Í¬²½Ö÷Ê±ÖÓÀàĞÍ */
+    /** åˆ‡æ¢åŒæ­¥ä¸»æ—¶é’Ÿç±»å‹ */
     void set_sync_type(SyncType type) {
         sync_type = type;
     }
 
-    /** Ìø×ª£¨Ïà¶Ôµ±Ç°Ê±¼äÆ«ÒÆ£¬Ãë£© */
+    /** è·³è½¬ï¼ˆç›¸å¯¹å½“å‰æ—¶é—´åç§»ï¼Œç§’ï¼‰ */
     void request_seek(int64_t target_pts_sec) {
         seek_pos = target_pts_sec * AV_TIME_BASE;
         seek_req = true;
     }
 
     /**
-     * »ñÈ¡Ö÷Ê±ÖÓÖµ£¨¸ù¾İµ±Ç°Í¬²½ÀàĞÍ£©
+     * è·å–ä¸»æ—¶é’Ÿå€¼ï¼ˆæ ¹æ®å½“å‰åŒæ­¥ç±»å‹ï¼‰
      */
     double get_master_clock() {
         switch (sync_type) {
@@ -580,12 +628,12 @@ public:
         }
     }
 
-    /* ==================== ÊÓÆµäÖÈ¾Ñ­»· ==================== */
+    /* ==================== è§†é¢‘æ¸²æŸ“å¾ªç¯ ==================== */
 
     /**
-     * ÊÓÆµäÖÈ¾Ö÷Ñ­»·£¨ÔËĞĞÔÚ¶ÀÁ¢Ïß³Ì£©
-     * @param renderer SDL3 äÖÈ¾Æ÷
-     * @param texture  SDL3 ÎÆÀí£¨ÄÚ²¿´´½¨/¸üĞÂ£©
+     * è§†é¢‘æ¸²æŸ“ä¸»å¾ªç¯ï¼ˆè¿è¡Œåœ¨ç‹¬ç«‹çº¿ç¨‹ï¼‰
+     * @param renderer SDL3 æ¸²æŸ“å™¨
+     * @param texture  SDL3 çº¹ç†ï¼ˆå†…éƒ¨åˆ›å»º/æ›´æ–°ï¼‰
      */
     void video_render_loop(SDL_Renderer* renderer, SDL_Texture*& texture) {
         frame_timer = av_gettime_relative() / 1000000.0;
@@ -596,7 +644,7 @@ public:
                 continue;
             }
 
-            // ÎŞÖ¡¿É¶ÁÔòµÈ´ı
+            // æ— å¸§å¯è¯»åˆ™ç­‰å¾…
             if (video_fq.nb_remaining() == 0) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
                 continue;
@@ -605,43 +653,43 @@ public:
             FrameItem* vp = video_fq.peek_readable();
             if (!vp) continue;
 
-            // ÈôĞòÁĞºÅ²»Æ¥Åä£¨³åË¢ºó¾ÉÖ¡£©£¬Ìø¹ı
+            // è‹¥åºåˆ—å·ä¸åŒ¹é…ï¼ˆå†²åˆ·åæ—§å¸§ï¼‰ï¼Œè·³è¿‡
             if (vp->serial != video_pq.get_serial()) {
                 video_fq.next();
                 continue;
             }
 
-            // ---------- ÔİÍ£×´Ì¬£º³ÖĞøÏÔÊ¾×îºóÒ»Ö¡ ----------
+            // ---------- æš‚åœçŠ¶æ€ï¼šæŒç»­æ˜¾ç¤ºæœ€åä¸€å¸§ ----------
             if (paused) {
                 render_frame(renderer, texture, video_fq.peek_last()->frame);
                 std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 continue;
             }
 
-            // ---------- ¼ÆËãÏÔÊ¾ÑÓ³Ù ----------
+            // ---------- è®¡ç®—æ˜¾ç¤ºå»¶è¿Ÿ ----------
             FrameItem* lastvp = video_fq.peek_last();
-            double duration = vp_duration(lastvp, vp);    // µ±Ç°Ö¡Ó¦³ÖĞøµÄÊ±¼ä
-            double delay = compute_target_delay(duration); // ¸ù¾İÍ¬²½µ÷ÕûºóµÄÑÓ³Ù
+            double duration = vp_duration(lastvp, vp);    // å½“å‰å¸§åº”æŒç»­çš„æ—¶é—´
+            double delay = compute_target_delay(duration); // æ ¹æ®åŒæ­¥è°ƒæ•´åçš„å»¶è¿Ÿ
 
             double time = av_gettime_relative() / 1000000.0;
-            // ÈôÎ´µ½ÏÔÊ¾Ê±¼ä£¬ÔòË¯ÃßµÈ´ı
+            // è‹¥æœªåˆ°æ˜¾ç¤ºæ—¶é—´ï¼Œåˆ™ç¡çœ ç­‰å¾…
             if (time < frame_timer + delay) {
                 double remaining_time = (frame_timer + delay) - time;
                 std::this_thread::sleep_for(std::chrono::microseconds(static_cast<int64_t>(remaining_time * 1000000)));
                 continue;
             }
 
-            // ¸üĞÂÖ¡¼ÆÊ±Æ÷
+            // æ›´æ–°å¸§è®¡æ—¶å™¨
             frame_timer += delay;
             if (delay > 0 && time - frame_timer > AV_SYNC_THRESHOLD_MAX) {
-                frame_timer = time;  // ·ÀÖ¹ÀÛ»ıÎó²î¹ı´ó
+                frame_timer = time;  // é˜²æ­¢ç´¯ç§¯è¯¯å·®è¿‡å¤§
             }
 
-            // ¸üĞÂÊÓÆµÊ±ÖÓ²¢Í¬²½Íâ²¿Ê±ÖÓ
+            // æ›´æ–°è§†é¢‘æ—¶é’Ÿå¹¶åŒæ­¥å¤–éƒ¨æ—¶é’Ÿ
             vidclk.set(vp->pts, vp->serial);
             extclk.sync_to_slave(vidclk);
 
-            // ---------- ¶ªÖ¡²ßÂÔ£¨ÖğÖ¡Ä£Ê½ÏÂ½ûÖ¹¶ªÖ¡£© ----------
+            // ---------- ä¸¢å¸§ç­–ç•¥ï¼ˆé€å¸§æ¨¡å¼ä¸‹ç¦æ­¢ä¸¢å¸§ï¼‰ ----------
             if (!step && video_fq.nb_remaining() > 1) {
                 if (time > frame_timer + duration) {
                     video_fq.next();
@@ -649,11 +697,11 @@ public:
                 }
             }
 
-            // äÖÈ¾µ±Ç°Ö¡
+            // æ¸²æŸ“å½“å‰å¸§
             render_frame(renderer, texture, vp->frame);
             video_fq.next();
 
-            // ÖğÖ¡Ä£Ê½ÏÂ£¬ÏÔÊ¾ÍêÒ»Ö¡ºóÁ¢¼´ÔİÍ£
+            // é€å¸§æ¨¡å¼ä¸‹ï¼Œæ˜¾ç¤ºå®Œä¸€å¸§åç«‹å³æš‚åœ
             if (step) {
                 set_pause(true);
                 step = false;
@@ -662,10 +710,10 @@ public:
     }
 
 private:
-    /* ==================== ÄÚ²¿¸¨Öúº¯Êı ==================== */
+    /* ==================== å†…éƒ¨è¾…åŠ©å‡½æ•° ==================== */
 
     /**
-     * ´ò¿ªÖ¸¶¨Á÷Ë÷ÒıµÄ½âÂëÆ÷ÉÏÏÂÎÄ
+     * æ‰“å¼€æŒ‡å®šæµç´¢å¼•çš„è§£ç å™¨ä¸Šä¸‹æ–‡
      */
     void open_codec_context(int stream_idx) {
         AVStream* st = fmt_ctx->streams[stream_idx];
@@ -684,7 +732,7 @@ private:
     }
 
     /**
-     * ³õÊ¼»¯ SDL3 ÒôÆµÁ÷£¨Ìæ´ú´«Í³µÄÒôÆµ»Øµ÷£©
+     * åˆå§‹åŒ– SDL3 éŸ³é¢‘æµï¼ˆæ›¿ä»£ä¼ ç»Ÿçš„éŸ³é¢‘å›è°ƒï¼‰
      */
     void init_sdl3_audio() {
         SDL_AudioSpec spec;
@@ -692,7 +740,7 @@ private:
         spec.channels = audio_tgt.ch_layout.nb_channels;
         spec.freq = audio_tgt.freq;
 
-        // ´ò¿ªÄ¬ÈÏ²¥·ÅÉè±¸µÄÒôÆµÁ÷£¬²¢°ó¶¨»Øµ÷º¯Êı
+        // æ‰“å¼€é»˜è®¤æ’­æ”¾è®¾å¤‡çš„éŸ³é¢‘æµï¼Œå¹¶ç»‘å®šå›è°ƒå‡½æ•°
         audio_stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, &ModernPlayer::sdl3_audio_callback_static, this);
         if (audio_stream) {
             SDL_ResumeAudioStreamDevice(audio_stream);
@@ -702,19 +750,19 @@ private:
         }
     }
 
-    /* ==================== Ïß³Ìº¯Êı ==================== */
+    /* ==================== çº¿ç¨‹å‡½æ•° ==================== */
 
     /**
-     * ½â¸´ÓÃ¶ÁÏß³Ì£º´ÓÎÄ¼şÖĞ¶ÁÈ¡ AVPacket ·ÅÈë¶ÔÓ¦¶ÓÁĞ
+     * è§£å¤ç”¨è¯»çº¿ç¨‹ï¼šä»æ–‡ä»¶ä¸­è¯»å– AVPacket æ”¾å…¥å¯¹åº”é˜Ÿåˆ—
      */
     void read_thread() {
         AVPacket* pkt = av_packet_alloc();
         while (!abort_request) {
-            // ´¦ÀíÌø×ªÇëÇó
+            // å¤„ç†è·³è½¬è¯·æ±‚
             if (seek_req) {
                 int ret = avformat_seek_file(fmt_ctx, -1, INT64_MIN, seek_pos, INT64_MAX, 0);
                 if (ret >= 0) {
-                    // ³åË¢ËùÓĞ¶ÓÁĞ£¬Ê¹½âÂëÆ÷ÖØĞÂÍ¬²½
+                    // å†²åˆ·æ‰€æœ‰é˜Ÿåˆ—ï¼Œä½¿è§£ç å™¨é‡æ–°åŒæ­¥
                     audio_pq.flush();
                     video_pq.flush();
                     audio_pq.put_flush_packet();
@@ -723,7 +771,7 @@ private:
                 seek_req = false;
             }
 
-            // ¶ÓÁĞÂúÊ±µÈ´ı
+            // é˜Ÿåˆ—æ»¡æ—¶ç­‰å¾…
             if (audio_pq.get_size() + video_pq.get_size() > MAX_QUEUE_SIZE) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 continue;
@@ -731,12 +779,12 @@ private:
 
             int ret = av_read_frame(fmt_ctx, pkt);
             if (ret < 0) {
-                // ¶Á²»µ½°üÊ±ĞİÃß£¬±ÜÃâÃ¦µÈ
+                // è¯»ä¸åˆ°åŒ…æ—¶ä¼‘çœ ï¼Œé¿å…å¿™ç­‰
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
 
-            // °´Á÷ÀàĞÍ·Ö·¢µ½¶ÔÓ¦°ü¶ÓÁĞ
+            // æŒ‰æµç±»å‹åˆ†å‘åˆ°å¯¹åº”åŒ…é˜Ÿåˆ—
             if (pkt->stream_index == audio_stream_idx) {
                 audio_pq.put(pkt);
             }
@@ -751,7 +799,7 @@ private:
     }
 
     /**
-     * ÊÓÆµ½âÂëÏß³Ì£º´ÓÊÓÆµ°ü¶ÓÁĞÈ¡°ü£¬½âÂëºó·ÅÈëÊÓÆµÖ¡¶ÓÁĞ
+     * è§†é¢‘è§£ç çº¿ç¨‹ï¼šä»è§†é¢‘åŒ…é˜Ÿåˆ—å–åŒ…ï¼Œè§£ç åæ”¾å…¥è§†é¢‘å¸§é˜Ÿåˆ—
      */
     void video_decode_thread() {
         AVFrame* frame = av_frame_alloc();
@@ -768,10 +816,10 @@ private:
 
             if (avcodec_send_packet(video_codec_ctx, pkt) == 0) {
                 while (avcodec_receive_frame(video_codec_ctx, frame) == 0) {
-                    // ¼ÆËã PTS£¨Ãë£©
+                    // è®¡ç®— PTSï¼ˆç§’ï¼‰
                     double pts = (frame->pts == AV_NOPTS_VALUE) ? 0.0 : frame->pts * av_q2d(fmt_ctx->streams[video_stream_idx]->time_base);
 
-                    // ¼òµ¥¶ªÖ¡²ßÂÔ£ºÈô PTS Ô¶ÂäºóÓÚÖ÷Ê±ÖÓÇÒ¶ÓÁĞÖĞ»¹ÓĞ°ü£¬Ôò¶ªÆú¸ÃÖ¡
+                    // ç®€å•ä¸¢å¸§ç­–ç•¥ï¼šè‹¥ PTS è¿œè½åäºä¸»æ—¶é’Ÿä¸”é˜Ÿåˆ—ä¸­è¿˜æœ‰åŒ…ï¼Œåˆ™ä¸¢å¼ƒè¯¥å¸§
                     double diff = pts - get_master_clock();
                     if (!std::isnan(diff) && std::fabs(diff) < AV_NOSYNC_THRESHOLD && diff < 0 && video_pq.get_nb_packets() > 0) {
                         av_frame_unref(frame);
@@ -793,7 +841,7 @@ private:
     }
 
     /**
-     * ÒôÆµ½âÂëÏß³Ì£º´ÓÒôÆµ°ü¶ÓÁĞÈ¡°ü£¬½âÂëºó·ÅÈëÒôÆµÖ¡¶ÓÁĞ
+     * éŸ³é¢‘è§£ç çº¿ç¨‹ï¼šä»éŸ³é¢‘åŒ…é˜Ÿåˆ—å–åŒ…ï¼Œè§£ç åæ”¾å…¥éŸ³é¢‘å¸§é˜Ÿåˆ—
      */
     void audio_decode_thread() {
         AVFrame* frame = av_frame_alloc();
@@ -828,17 +876,17 @@ private:
         av_frame_free(&frame);
     }
 
-    /* ==================== ÒôÆµÊä³öÏà¹Ø ==================== */
+    /* ==================== éŸ³é¢‘è¾“å‡ºç›¸å…³ ==================== */
 
     /**
-     * SDL3 ÒôÆµ»Øµ÷¾²Ì¬°ü×°£¨½«ÓÃ»§Êı¾İ×ªÎª this Ö¸Õë£©
+     * SDL3 éŸ³é¢‘å›è°ƒé™æ€åŒ…è£…ï¼ˆå°†ç”¨æˆ·æ•°æ®è½¬ä¸º this æŒ‡é’ˆï¼‰
      */
     static void sdl3_audio_callback_static(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount) {
         static_cast<ModernPlayer*>(userdata)->sdl3_audio_callback(stream, additional_amount);
     }
 
     /**
-     * SDL3 ÒôÆµ»Øµ÷ºËĞÄÂß¼­£º´ÓÒôÆµÖ¡¶ÓÁĞÈ¡³öÖ¡£¬ÖØ²ÉÑù£¬»ìÒô£¬ËÍÈë SDL Á÷
+     * SDL3 éŸ³é¢‘å›è°ƒæ ¸å¿ƒé€»è¾‘ï¼šä»éŸ³é¢‘å¸§é˜Ÿåˆ—å–å‡ºå¸§ï¼Œé‡é‡‡æ ·ï¼Œæ··éŸ³ï¼Œé€å…¥ SDL æµ
      */
     void sdl3_audio_callback(SDL_AudioStream* stream, int additional_amount) {
         int len = additional_amount;
@@ -846,12 +894,12 @@ private:
         int mix_index = 0;
 
         while (len > 0) {
-            // Èôµ±Ç°ÒôÆµ»º³åÇøÒÑÓÃÍê£¬½âÂëĞÂÊı¾İ
+            // è‹¥å½“å‰éŸ³é¢‘ç¼“å†²åŒºå·²ç”¨å®Œï¼Œè§£ç æ–°æ•°æ®
             if (audio_buf_index >= audio_buf_size) {
                 audio_buf_size = audio_decode_frame();
                 audio_buf_index = 0;
                 if (audio_buf_size < 0) {
-                    // Ã»ÓĞ¿ÉÓÃÊı¾İ£¬Ìî³ä¾²Òô
+                    // æ²¡æœ‰å¯ç”¨æ•°æ®ï¼Œå¡«å……é™éŸ³
                     audio_buf_size = 1024;
                     std::memset(audio_resample_buf.data(), 0, audio_buf_size);
                 }
@@ -860,7 +908,7 @@ private:
             int len1 = audio_buf_size - audio_buf_index;
             if (len1 > len) len1 = len;
 
-            // »ìÒô´¦Àí£¨¾²Òô/ÒôÁ¿µ÷½Ú£©
+            // æ··éŸ³å¤„ç†ï¼ˆé™éŸ³/éŸ³é‡è°ƒèŠ‚ï¼‰
             if (muted || paused) {
                 std::memset(mix_buf.data() + mix_index, 0, len1);
             }
@@ -869,7 +917,7 @@ private:
             }
             else {
                 std::memset(mix_buf.data() + mix_index, 0, len1);
-                // SDL3 »ìÒôº¯Êı£ºÒôÁ¿·¶Î§ 0.0~1.0
+                // SDL3 æ··éŸ³å‡½æ•°ï¼šéŸ³é‡èŒƒå›´ 0.0~1.0
                 SDL_MixAudio(mix_buf.data() + mix_index, audio_resample_buf.data() + audio_buf_index, SDL_AUDIO_S16, len1, audio_volume);
             }
 
@@ -878,18 +926,18 @@ private:
             audio_buf_index += len1;
         }
 
-        // ½«»ìÒôºóµÄÊı¾İËÍÈë SDL3 ÒôÆµÁ÷
+        // å°†æ··éŸ³åçš„æ•°æ®é€å…¥ SDL3 éŸ³é¢‘æµ
         SDL_PutAudioStreamData(stream, mix_buf.data(), additional_amount);
 
-        // ¸üĞÂÒôÆµÊ±ÖÓ£¨¼õÈ¥Ó²¼ş»º³åÑÓ³Ù£©
+        // æ›´æ–°éŸ³é¢‘æ—¶é’Ÿï¼ˆå‡å»ç¡¬ä»¶ç¼“å†²å»¶è¿Ÿï¼‰
         double hw_buf_delay = static_cast<double>(audio_buf_size - audio_buf_index) / audio_tgt.bytes_per_sec;
         audclk.set(audio_clock - hw_buf_delay, audio_pq.get_serial());
         extclk.sync_to_slave(audclk);
     }
 
     /**
-     * ´ÓÒôÆµÖ¡¶ÓÁĞÈ¡Ò»Ö¡£¬½øĞĞÖØ²ÉÑù£¬·µ»ØÖØ²ÉÑùºóÊı¾İ´óĞ¡
-     * @return Êı¾İ×Ö½ÚÊı£¬¸ºÖµ±íÊ¾ÎŞÊı¾İ
+     * ä»éŸ³é¢‘å¸§é˜Ÿåˆ—å–ä¸€å¸§ï¼Œè¿›è¡Œé‡é‡‡æ ·ï¼Œè¿”å›é‡é‡‡æ ·åæ•°æ®å¤§å°
+     * @return æ•°æ®å­—èŠ‚æ•°ï¼Œè´Ÿå€¼è¡¨ç¤ºæ— æ•°æ®
      */
     int audio_decode_frame() {
         if (paused) return -1;
@@ -902,7 +950,7 @@ private:
             return -1;
         }
 
-        // ´´½¨/¸üĞÂÖØ²ÉÑùÆ÷ÉÏÏÂÎÄ
+        // åˆ›å»º/æ›´æ–°é‡é‡‡æ ·å™¨ä¸Šä¸‹æ–‡
         if (!swr_ctx) {
             swr_alloc_set_opts2(&swr_ctx,
                 &audio_tgt.ch_layout, audio_tgt.fmt, audio_tgt.freq,
@@ -911,7 +959,7 @@ private:
             swr_init(swr_ctx);
         }
 
-        // ¸ù¾İÖ÷Ê±ÖÓÆ«²îµ÷ÕûÊä³ö²ÉÑùÊı£¨ÊµÏÖÒôÆµÍ¬²½£©
+        // æ ¹æ®ä¸»æ—¶é’Ÿåå·®è°ƒæ•´è¾“å‡ºé‡‡æ ·æ•°ï¼ˆå®ç°éŸ³é¢‘åŒæ­¥ï¼‰
         int wanted_nb_samples = synchronize_audio(af->frame->nb_samples);
         if (wanted_nb_samples != af->frame->nb_samples) {
             swr_set_compensation(swr_ctx,
@@ -919,16 +967,16 @@ private:
                 wanted_nb_samples * audio_tgt.freq / af->frame->sample_rate);
         }
 
-        // ¼ÆËãÊä³öÑù±¾Êı
+        // è®¡ç®—è¾“å‡ºæ ·æœ¬æ•°
         int out_samples = av_rescale_rnd(swr_get_delay(swr_ctx, af->frame->sample_rate) + af->frame->nb_samples,
             audio_tgt.freq, af->frame->sample_rate, AV_ROUND_UP);
         uint8_t* out_data = audio_resample_buf.data();
 
-        // Ö´ĞĞÖØ²ÉÑù
+        // æ‰§è¡Œé‡é‡‡æ ·
         int converted_samples = swr_convert(swr_ctx, &out_data, out_samples,
             (const uint8_t**)af->frame->extended_data, af->frame->nb_samples);
 
-        // ¸üĞÂÒôÆµÊ±ÖÓ
+        // æ›´æ–°éŸ³é¢‘æ—¶é’Ÿ
         audio_clock = af->pts + static_cast<double>(af->frame->nb_samples) / af->frame->sample_rate;
         int resampled_data_size = converted_samples * audio_tgt.ch_layout.nb_channels * av_get_bytes_per_sample(audio_tgt.fmt);
 
@@ -937,7 +985,7 @@ private:
     }
 
     /**
-     * ÒôÆµÍ¬²½Ğ£Õı£º¸ù¾İÖ÷Ê±ÖÓÆ«²îµ÷Õû²ÉÑùÊı
+     * éŸ³é¢‘åŒæ­¥æ ¡æ­£ï¼šæ ¹æ®ä¸»æ—¶é’Ÿåå·®è°ƒæ•´é‡‡æ ·æ•°
      */
     int synchronize_audio(int nb_samples) {
         if (sync_type == AV_SYNC_AUDIO_MASTER) return nb_samples;
@@ -965,10 +1013,10 @@ private:
         return nb_samples;
     }
 
-    /* ==================== ÊÓÆµÍ¬²½¸¨Öú ==================== */
+    /* ==================== è§†é¢‘åŒæ­¥è¾…åŠ© ==================== */
 
     /**
-     * ¼ÆËãÁ½Ö¡Ö®¼äµÄÏÔÊ¾Ê±³¤
+     * è®¡ç®—ä¸¤å¸§ä¹‹é—´çš„æ˜¾ç¤ºæ—¶é•¿
      */
     double vp_duration(FrameItem* lastvp, FrameItem* vp) {
         if (lastvp->serial == vp->serial) {
@@ -982,7 +1030,7 @@ private:
     }
 
     /**
-     * ¸ù¾İÖ÷Ê±ÖÓÆ«²î¼ÆËãÄ¿±êÏÔÊ¾ÑÓ³Ù
+     * æ ¹æ®ä¸»æ—¶é’Ÿåå·®è®¡ç®—ç›®æ ‡æ˜¾ç¤ºå»¶è¿Ÿ
      */
     double compute_target_delay(double delay) {
         double diff = vidclk.get() - get_master_clock();
@@ -1002,11 +1050,11 @@ private:
         return delay;
     }
 
-    /* ==================== ÊÓÆµäÖÈ¾ ==================== */
+    /* ==================== è§†é¢‘æ¸²æŸ“ ==================== */
 
     /**
-     * ½« AVFrame ×ª»»Îª SDL ÎÆÀí²¢äÖÈ¾
-     * Ö§³Ö YUV420P Ö±½ÓÎÆÀí¸üĞÂ£¬ÆäËû¸ñÊ½Í¨¹ı sws_scale ×ªÎª BGRA
+     * å°† AVFrame è½¬æ¢ä¸º SDL çº¹ç†å¹¶æ¸²æŸ“
+     * æ”¯æŒ YUV420P ç›´æ¥çº¹ç†æ›´æ–°ï¼Œå…¶ä»–æ ¼å¼é€šè¿‡ sws_scale è½¬ä¸º BGRA
      */
     void render_frame(SDL_Renderer* renderer, SDL_Texture*& texture, AVFrame* frame) {
         if (!frame || frame->width <= 0 || frame->height <= 0) return;
@@ -1015,7 +1063,7 @@ private:
         int h = frame->height & ~1;
 
         if (frame->format == AV_PIX_FMT_YUV420P && frame->linesize[0] > 0) {
-            // Ö±½ÓÊ¹ÓÃ YUV ÎÆÀí
+            // ç›´æ¥ä½¿ç”¨ YUV çº¹ç†
             if (!texture) {
                 texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, w, h);
             }
@@ -1025,7 +1073,7 @@ private:
                 frame->data[2], frame->linesize[2]);
         }
         else {
-            // ·Ç YUV420P£¬×ª»»Îª BGRA ÎÆÀí
+            // é YUV420Pï¼Œè½¬æ¢ä¸º BGRA çº¹ç†
             if (!texture) {
                 texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, h);
             }
@@ -1046,21 +1094,21 @@ private:
             }
         }
 
-        // äÖÈ¾ÎÆÀí£¨Ö§³Ö´¹Ö±·­×ª£¬Ä³Ğ© YUV ¸ñÊ½ĞèÒª£©
+        // æ¸²æŸ“çº¹ç†ï¼ˆæ”¯æŒå‚ç›´ç¿»è½¬ï¼ŒæŸäº› YUV æ ¼å¼éœ€è¦ï¼‰
         SDL_RenderClear(renderer);
         SDL_FlipMode flip = (frame->linesize[0] < 0 && frame->format == AV_PIX_FMT_YUV420P) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
         SDL_RenderTextureRotated(renderer, texture, nullptr, nullptr, 0.0, nullptr, flip);
         SDL_RenderPresent(renderer);
     }
 
-    /* ==================== ³ÉÔ±±äÁ¿ ==================== */
+    /* ==================== æˆå‘˜å˜é‡ ==================== */
 
-    // ×´Ì¬¿ØÖÆ
+    // çŠ¶æ€æ§åˆ¶
     std::string file_url;
     std::atomic<bool> abort_request;
     std::atomic<bool> paused;
     bool last_paused;
-    std::atomic<bool> step;          // ÖğÖ¡Ä£Ê½±êÖ¾
+    std::atomic<bool> step;          // é€å¸§æ¨¡å¼æ ‡å¿—
     std::atomic<bool> seek_req;
     int64_t seek_pos;
 
@@ -1068,49 +1116,49 @@ private:
     std::atomic<float> audio_volume;
     std::atomic<bool> muted;
 
-    // Á÷Ë÷Òı
+    // æµç´¢å¼•
     int audio_stream_idx;
     int video_stream_idx;
 
-    // FFmpeg ÉÏÏÂÎÄ
+    // FFmpeg ä¸Šä¸‹æ–‡
     AVFormatContext* fmt_ctx;
     AVCodecContext* audio_codec_ctx;
     AVCodecContext* video_codec_ctx;
 
-    // ÖØ²ÉÑù/×ª»»ÉÏÏÂÎÄ
+    // é‡é‡‡æ ·/è½¬æ¢ä¸Šä¸‹æ–‡
     SwrContext* swr_ctx;
     SwsContext* sws_ctx;
 
-    // °ü/Ö¡¶ÓÁĞ
+    // åŒ…/å¸§é˜Ÿåˆ—
     PacketQueue audio_pq;
     PacketQueue video_pq;
     FrameQueue audio_fq;
     FrameQueue video_fq;
 
-    // Ê±ÖÓ
+    // æ—¶é’Ÿ
     PlayerClock audclk;
     PlayerClock vidclk;
     PlayerClock extclk;
 
-    // ÒôÆµ²ÎÊıÓë»º³å
+    // éŸ³é¢‘å‚æ•°ä¸ç¼“å†²
     AudioParams audio_tgt;
-    SDL_AudioStream* audio_stream;      // SDL3 ÒôÆµÁ÷¶ÔÏó
+    SDL_AudioStream* audio_stream;      // SDL3 éŸ³é¢‘æµå¯¹è±¡
     std::vector<uint8_t> audio_resample_buf;
     int audio_buf_size;
     int audio_buf_index;
     double audio_clock;
     double audio_diff_cum;
     int audio_diff_avg_count;
-    double frame_timer;                // ÊÓÆµäÖÈ¾¼ÆÊ±Æ÷
+    double frame_timer;                // è§†é¢‘æ¸²æŸ“è®¡æ—¶å™¨
 
-    // Ïß³Ì
+    // çº¿ç¨‹
     std::thread read_th;
     std::thread audio_decode_th;
     std::thread video_decode_th;
 };
 
 /* ==========================================
- * Ö÷º¯ÊıÓë SDL3 ÊÂ¼şÑ­»·
+ * ä¸»å‡½æ•°ä¸ SDL3 äº‹ä»¶å¾ªç¯
  * ========================================== */
 int main(int argc, char* argv[]) {
     if (argc < 2) {
@@ -1118,17 +1166,17 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // ³õÊ¼»¯ÌØÊâ³åË¢°ü
+    // åˆå§‹åŒ–ç‰¹æ®Šå†²åˆ·åŒ…
     flush_pkt = av_packet_alloc();
-    flush_pkt->data = (uint8_t*)flush_pkt;  // ±ê¼ÇÎª³åË¢°ü
+    flush_pkt->data = (uint8_t*)flush_pkt;  // æ ‡è®°ä¸ºå†²åˆ·åŒ…
 
-    // ³õÊ¼»¯ SDL3£¨ÊÓÆµ + ÒôÆµ£©
+    // åˆå§‹åŒ– SDL3ï¼ˆè§†é¢‘ + éŸ³é¢‘ï¼‰
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         std::cerr << "Could not initialize SDL3: " << SDL_GetError() << std::endl;
         return -1;
     }
 
-    // ´´½¨´°¿Ú£¨SDL3 ÎŞĞèÖ¸¶¨ x,y£©
+    // åˆ›å»ºçª—å£ï¼ˆSDL3 æ— éœ€æŒ‡å®š x,yï¼‰
     SDL_Window* window = SDL_CreateWindow("Modern A/V Player Core Engine (SDL3 Full)",
         1280, 720, SDL_WINDOW_RESIZABLE);
     if (!window) {
@@ -1136,22 +1184,22 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // ´´½¨äÖÈ¾Æ÷£¨SDL3 ¼ò»¯½Ó¿Ú£©
+    // åˆ›å»ºæ¸²æŸ“å™¨ï¼ˆSDL3 ç®€åŒ–æ¥å£ï¼‰
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
     SDL_Texture* texture = nullptr;
 
-    // ´´½¨²¥·ÅÆ÷ÊµÀı²¢´ò¿ªÎÄ¼ş
+    // åˆ›å»ºæ’­æ”¾å™¨å®ä¾‹å¹¶æ‰“å¼€æ–‡ä»¶
     ModernPlayer player;
     if (!player.open(argv[1])) {
         return -1;
     }
 
-    // Æô¶¯ÊÓÆµäÖÈ¾Ïß³Ì
+    // å¯åŠ¨è§†é¢‘æ¸²æŸ“çº¿ç¨‹
     std::thread render_th([&]() {
         player.video_render_loop(renderer, texture);
         });
 
-    // ---------- Ö÷ÊÂ¼şÑ­»· ----------
+    // ---------- ä¸»äº‹ä»¶å¾ªç¯ ----------
     bool running = true;
     SDL_Event event;
     while (running) {
@@ -1165,34 +1213,34 @@ int main(int argc, char* argv[]) {
                 case SDLK_ESCAPE:
                     running = false;
                     break;
-                case SDLK_SPACE:          // ²¥·Å/ÔİÍ£
+                case SDLK_SPACE:          // æ’­æ”¾/æš‚åœ
                     player.toggle_pause();
                     break;
-                case SDLK_S:              // ÖğÖ¡
+                case SDLK_S:              // é€å¸§
                     player.step_to_next_frame();
                     break;
-                case SDLK_M:              // ¾²ÒôÇĞ»»
+                case SDLK_M:              // é™éŸ³åˆ‡æ¢
                     player.toggle_mute();
                     break;
-                case SDLK_UP:             // ÒôÁ¿ +
+                case SDLK_UP:             // éŸ³é‡ +
                     player.adjust_volume(0.05f);
                     break;
-                case SDLK_DOWN:           // ÒôÁ¿ -
+                case SDLK_DOWN:           // éŸ³é‡ -
                     player.adjust_volume(-0.05f);
                     break;
-                case SDLK_RIGHT:          // ¿ì½ø 10 Ãë
+                case SDLK_RIGHT:          // å¿«è¿› 10 ç§’
                     player.request_seek(10);
                     break;
-                case SDLK_LEFT:           // ¿ìÍË 10 Ãë
+                case SDLK_LEFT:           // å¿«é€€ 10 ç§’
                     player.request_seek(-10);
                     break;
-                case SDLK_1:              // ÇĞ»»ÎªÒôÆµÖ÷Ê±ÖÓ
+                case SDLK_1:              // åˆ‡æ¢ä¸ºéŸ³é¢‘ä¸»æ—¶é’Ÿ
                     player.set_sync_type(AV_SYNC_AUDIO_MASTER);
                     break;
-                case SDLK_2:              // ÇĞ»»ÎªÊÓÆµÖ÷Ê±ÖÓ
+                case SDLK_2:              // åˆ‡æ¢ä¸ºè§†é¢‘ä¸»æ—¶é’Ÿ
                     player.set_sync_type(AV_SYNC_VIDEO_MASTER);
                     break;
-                case SDLK_3:              // ÇĞ»»ÎªÍâ²¿Ê±ÖÓ
+                case SDLK_3:              // åˆ‡æ¢ä¸ºå¤–éƒ¨æ—¶é’Ÿ
                     player.set_sync_type(AV_SYNC_EXTERNAL_CLOCK);
                     break;
                 default:
@@ -1203,17 +1251,17 @@ int main(int argc, char* argv[]) {
         SDL_Delay(10);
     }
 
-    // Í£Ö¹²¥·ÅÆ÷²¢µÈ´ıäÖÈ¾Ïß³Ì½áÊø
+    // åœæ­¢æ’­æ”¾å™¨å¹¶ç­‰å¾…æ¸²æŸ“çº¿ç¨‹ç»“æŸ
     player.stop();
     if (render_th.joinable()) render_th.join();
 
-    // ÇåÀí SDL ×ÊÔ´
+    // æ¸…ç† SDL èµ„æº
     if (texture) SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    // ÊÍ·Å³åË¢°ü
+    // é‡Šæ”¾å†²åˆ·åŒ…
     av_packet_free(&flush_pkt);
     return 0;
 }
